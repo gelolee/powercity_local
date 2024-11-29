@@ -1,0 +1,171 @@
+<?php
+
+/**
+ * Template Name: Diesel Generator
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ *
+ * @package Bootscore
+ */
+
+get_header();
+?>
+
+<div id="content" class="site-content">
+    <div id="primary" class="content-area">
+        <!-- Hook to add something nice -->
+        <?php bs_after_primary(); ?>
+        <main id="main" class="site-main">
+            <section class="section1" id="diesel-banner">
+                <img src="<?= get_field('banner_image')['url'] ?>" alt="">
+                <div class="center-content">
+                    <div class="container">
+                        <?php
+                        if (function_exists('yoast_breadcrumb')) {
+                            yoast_breadcrumb('<p id="breadcrumbs">', '</p>');
+                        }
+                        ?>
+                        <h2>
+                            <?= the_field('banner_title') ?>
+                        </h2>
+                        <?= the_field('banner_description') ?>
+                    </div>
+                </div>
+            </section>
+            <section class="section2" id="products">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-9">
+                            <div class="view-toggle">
+                                <button class=" btn-toggle grid-view active"><i
+                                        class="fa-solid fa-table-cells"></i></button>
+                                <button class=" btn-toggle list-view"><i class="fa-solid fa-list"></i></button>
+                            </div>
+                            <div class="row products-grid">
+                                <?php
+                                $term = get_term_by('name', 'Diesel Generator', 'generator_type');
+                                if ($term) {
+                                    $args = array(
+                                        'post_type' => 'products',
+                                        'posts_per_page' => -1,
+                                        'paged' => $paged,
+                                        'tax_query' => array(
+                                            array(
+                                                'taxonomy' => 'generator_type',
+                                                'field' => 'term_id',
+                                                'terms' => $term->term_id,
+                                            ),
+                                        ),
+                                    );
+                                    $query = new WP_Query($args);
+                                    if ($query->have_posts()) {
+                                        while ($query->have_posts()) {
+                                            $query->the_post();
+                                            $thumbnail_image = get_field('featured_image');
+                                            $description_field = get_field('description');
+                                            $button_name = get_field('button');
+                                            $permalink = get_permalink();
+                                            $the_title = get_the_title();
+                                            // preg_match('/\(([^)]+)\)/', $the_title, $matches);
+                                            // $extracted_text = isset ($matches[0]) ? $matches[0] : '';
+                                            ?>
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="card h-100">
+                                                    <img src="<?php echo esc_url($thumbnail_image['url']); ?>"
+                                                        alt="<?php echo esc_attr($thumbnail_image['alt']); ?>">
+                                                    <div class="card-body">
+                                                        <span>
+                                                            <?php echo $description_field ?>
+                                                        </span>
+                                                        <h2>
+                                                            <?php echo $the_title ?>
+                                                        </h2>
+                                                        <div class="button">
+                                                            <a href="<?php echo esc_url($permalink); ?>">
+                                                                <?php echo $button_name ?>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        wp_reset_postdata();
+                                    } else {
+                                        echo 'No products found for Diesel Generator';
+                                    }
+                                } else {
+                                    echo 'Diesel Generator term not found';
+                                }
+                                ?>
+                            </div>
+
+                            <div class="row products-list">
+                                <div class="card">
+                                    <?php
+                                    $term = get_term_by('name', 'Diesel Generator', 'generator_type');
+                                    if ($term) {
+                                        $args = array(
+                                            'post_type' => 'products',
+                                            'posts_per_page' => -1,
+                                            'tax_query' => array(
+                                                array(
+                                                    'taxonomy' => 'generator_type',
+                                                    'field' => 'term_id',
+                                                    'terms' => $term->term_id,
+                                                ),
+                                            ),
+                                        );
+                                        $query = new WP_Query($args);
+                                        if ($query->have_posts()) {
+                                            while ($query->have_posts()) {
+                                                $query->the_post();
+                                                $thumbnail_image = get_field('featured_image');
+                                                $description_field = get_field('description');
+                                                $button_name = get_field('button');
+                                                $permalink = get_permalink();
+                                                $the_title = get_the_title();
+
+                                                preg_match('/\(([^)]+)\)/', $the_title, $matches);
+                                                $extracted_text = isset ($matches[0]) ? $matches[0] : '';
+                                                ?>
+                                                <div class="grid d-flex">
+                                                    <img src="<?php echo esc_url($thumbnail_image['url']); ?>"
+                                                        alt="<?php echo esc_attr($thumbnail_image['alt']); ?>">
+                                                    <div class="body">
+                                                        <span>
+                                                            <?php echo $description_field ?>
+                                                        </span>
+                                                        <h2>
+                                                            <?php echo $extracted_text ?>
+                                                        </h2>
+                                                    </div>
+                                                    <div class="button">
+                                                        <a href="<?php echo esc_url($permalink); ?>">
+                                                            <?php echo $button_name ?>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                            wp_reset_postdata();
+                                        } else {
+                                            echo 'No products found for Diesel Generator';
+                                        }
+                                    } else {
+                                        echo 'Diesel Generator term not found';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<?php
+get_footer();
